@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard Admin — SIGFAS{% endblock %}
+{% block content %}
+<div class="admin-wrap">
+  <div class="admin-header">
+    <h2>Kelola Fasilitas</h2>
+    <a href="{{ url_for('admin_add') }}" class="btn-primary">+ Tambah Fasilitas</a>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="admin-table">
+      <thead>
+        <tr><th>Nama</th><th>Jenis</th><th>Alamat</th><th>Aksi</th></tr>
+      </thead>
+      <tbody>
+        {% for f in facilities %}
+        <tr>
+          <td>{{ f.name }}</td>
+          <td><span class="badge badge-{{ f.type }}">{{ f.type }}</span></td>
+          <td>{{ f.address or '-' }}</td>
+          <td>
+            <a href="{{ url_for('admin_edit', id=f.id) }}" class="btn-sm">Edit</a>
+            <form method="POST" action="{{ url_for('admin_delete', id=f.id) }}" style="display:inline"
+                  onsubmit="return confirm('Hapus fasilitas ini?')">
+              <button type="submit" class="btn-sm btn-danger">Hapus</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="text-align:center">Belum ada data fasilitas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  </div>
+{% endblock %}

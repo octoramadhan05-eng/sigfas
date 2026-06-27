@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Tambah Fasilitas — SIGFAS{% endblock %}
+
+{% block head %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="form-wrap">
+  <h2>Tambah Fasilitas</h2>
+  <form method="POST">
+    <label>Nama Fasilitas</label>
+    <input type="text" name="name" required>
+    
+    <label>Jenis</label>
+    <select name="type" required>
+      <option value="sekolah">Sekolah</option>
+      <option value="puskesmas">Puskesmas</option>
+      <option value="rumah_sakit">Rumah Sakit</option>
+      <option value="tempat_ibadah">Tempat Ibadah</option>
+      <option value="pasar">Pasar</option>
+      <option value="polisi">Kantor Polisi</option>
+    </select>
+    
+    <label>Alamat</label>
+    <input type="text" name="address">
+    
+    <label>Deskripsi</label>
+    <textarea name="description" rows="3"></textarea>
+    
+    <label>Titik Lokasi (Klik pada peta)</label>
+    <div id="admin-map" style="height: 300px; border-radius: 8px; margin-bottom: 1rem; width: 100%; border: 1px solid rgba(255,255,255,0.1);"></div>
+    
+    <label>Latitude</label>
+    <input type="number" id="lat-input" name="lat" step="any" placeholder="-7.xxxxx" required>
+    <label>Longitude</label>
+    <input type="number" id="lon-input" name="lon" step="any" placeholder="110.xxxxx" required>
+    
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Simpan</button>
+      <a href="{{ url_for('admin_dashboard') }}">Batal</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Token Mapbox Lu
+  mapboxgl.accessToken = 'pk.eyJ1Ijoib2N0b3JhbWFkaGFuMDUiLCJhIjoiY21xdzZwa2ZzMThncDJxcXlneHEyajVyNyJ9.I9hn4Rlo3Bp7c3v-0BKuzg';
+  
+  // Inisialisasi Peta (Fokus ke Sukoharjo)
+  const map = new mapboxgl.Map({
+    container: 'admin-map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [110.83, -7.63], 
+    zoom: 11
+  });
+
+  // Bikin Marker Kosong
+  let marker = new mapboxgl.Marker({ color: '#e74c3c' });
+
+  // Event Listener: Kalau peta diklik, ambil lat/lon dan taruh marker
+  map.on('click', (e) => {
+    const lat = e.lngLat.lat;
+    const lon = e.lngLat.lng;
+    
+    // Isi otomatis ke kolom input form
+    document.getElementById('lat-input').value = lat.toFixed(6);
+    document.getElementById('lon-input').value = lon.toFixed(6);
+    
+    // Pindahin marker ke titik yang diklik
+    marker.setLngLat([lon, lat]).addTo(map);
+  });
+</script>
+{% endblock %}

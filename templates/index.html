@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Peta Fasilitas Umum — SIGFAS Sukoharjo{% endblock %}
+
+{% block head %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<style>
+  /* Bikin stat-item bisa di-scroll ke samping kalau layar kekecilan */
+  .stats-bar { overflow-x: auto; overflow-y: hidden; justify-content: flex-start; scrollbar-width: none; }
+  .stats-bar::-webkit-scrollbar { display: none; }
+  .stat-item { min-width: 140px; }
+  .filter-buttons { overflow-x: auto; padding-bottom: 4px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="stats-bar">
+  <div class="stat-item total"><span class="stat-num" id="stat-total">0</span><span class="stat-label">Total Fasilitas</span></div>
+  <div class="stat-item sekolah"><span class="stat-num" id="stat-sekolah">0</span><span class="stat-label">🏫 Sekolah</span></div>
+  <div class="stat-item puskesmas"><span class="stat-num" id="stat-puskesmas">0</span><span class="stat-label">🏥 Puskesmas</span></div>
+  <div class="stat-item rs"><span class="stat-num" id="stat-rs">0</span><span class="stat-label">🏨 RS</span></div>
+  <div class="stat-item" style="border-bottom: 2.5px solid #9b59b6;"><span class="stat-num" id="stat-ibadah">0</span><span class="stat-label">🕌 Ibadah</span></div>
+  <div class="stat-item" style="border-bottom: 2.5px solid #f1c40f;"><span class="stat-num" id="stat-pasar">0</span><span class="stat-label">🛒 Pasar</span></div>
+  <div class="stat-item" style="border-bottom: 2.5px solid #34495e;"><span class="stat-num" id="stat-polisi">0</span><span class="stat-label">👮 Polisi</span></div>
+</div>
+
+<div class="controls">
+  <div class="controls-left">
+    <input type="text" id="search" placeholder="🔍 Cari nama fasilitas..." oninput="filterMap()">
+    <div class="filter-buttons">
+      <button class="btn-filter active" data-type="">Semua</button>
+      <button class="btn-filter" data-type="sekolah">🏫 Sekolah</button>
+      <button class="btn-filter" data-type="puskesmas">🏥 Puskesmas</button>
+      <button class="btn-filter" data-type="rumah_sakit">🏨 RS</button>
+      <button class="btn-filter" data-type="tempat_ibadah">🕌 Ibadah</button>
+      <button class="btn-filter" data-type="pasar">🛒 Pasar</button>
+      <button class="btn-filter" data-type="polisi">👮 Polisi</button>
+    </div>
+  </div>
+  <div class="controls-right">
+    <span id="filter-area-label" class="area-label">📍 Semua Wilayah</span>
+    <button id="btn-reset-area" style="display:none" class="btn-reset">✕ Reset</button>
+    <button id="btn-nearest" class="btn-nearest">📡 Terdekat</button>
+    <button id="btn-layers" class="btn-layers">🗂️ Layer</button>
+    <select id="basemap-select" class="basemap-select">
+      <option value="dark">Dark</option>
+      <option value="streets">Streets</option>
+      <option value="satellite">Satellite</option>
+      <option value="outdoors">Outdoors</option>
+    </select>
+  </div>
+</div>
+
+<div id="layer-panel" class="layer-panel" style="display:none">
+  <div class="layer-panel-title">🗂️ Layer Administrasi</div>
+  <label><input type="checkbox" id="toggle-kabkota"> <span class="layer-dot" style="background:#e74c3c"></span> Batas Kab/Kota</label>
+  <label><input type="checkbox" id="toggle-kec"> <span class="layer-dot" style="background:#9b59b6"></span> Batas Kecamatan <small>(klik untuk filter)</small></label>
+  <label><input type="checkbox" id="toggle-desa"> <span class="layer-dot" style="background:#3498db"></span> Batas Desa/Kelurahan</label>
+</div>
+
+<div id="sidebar" class="sidebar" style="display:none">
+  <button id="sidebar-close" class="sidebar-close">✕</button>
+  <div id="sidebar-content"></div>
+</div>
+
+<div id="map"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock %}

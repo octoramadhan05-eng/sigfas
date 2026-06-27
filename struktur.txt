@@ -1,0 +1,27 @@
+sigfas/
+├── app.py                  # Entry point Flask
+├── config.py               # Konfigurasi DB, secret key
+├── requirements.txt        # Dependencies Python
+├── .env                    # Variabel environment (tidak di-upload ke GitHub)
+├── .gitignore
+│
+├── static/
+│   ├── css/
+│   │   └── style.css       # Styling utama
+│   ├── js/
+│   │   ├── map.js          # Logic peta Leaflet
+│   │   └── admin.js        # Logic form admin
+│   └── img/
+│       └── marker-*.png    # Icon marker per jenis fasilitas
+│
+├── templates/
+│   ├── base.html           # Template dasar (navbar, footer)
+│   ├── index.html          # Halaman publik (peta)
+│   ├── login.html          # Halaman login admin
+│   └── admin/
+│       ├── dashboard.html  # Dashboard admin
+│       ├── add.html        # Form tambah fasilitas
+│       └── edit.html       # Form edit fasilitas
+│
+└── data/
+    └── sukoharjo_osm.geojson  # Data OSM hasil export

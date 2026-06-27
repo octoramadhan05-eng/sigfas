@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Edit Fasilitas — SIGFAS{% endblock %}
+
+{% block head %}
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="form-wrap">
+  <h2>Edit Fasilitas</h2>
+  <form method="POST">
+    <label>Nama Fasilitas</label>
+    <input type="text" name="name" value="{{ facility.name }}" required>
+    
+    <label>Jenis</label>
+    <select name="type" required>
+      {% for t in ['sekolah','puskesmas','rumah_sakit','tempat_ibadah','pasar','polisi'] %}
+      <option value="{{ t }}" {% if facility.type == t %}selected{% endif %}>{{ t | replace('_', ' ') | title }}</option>
+      {% endfor %}
+    </select>
+    
+    <label>Alamat</label>
+    <input type="text" name="address" value="{{ facility.address or '' }}">
+    
+    <label>Deskripsi</label>
+    <textarea name="description" rows="3">{{ facility.description or '' }}</textarea>
+    
+    <label>Titik Lokasi (Bisa klik ulang di peta untuk mengubah)</label>
+    <div id="admin-map" style="height: 300px; border-radius: 8px; margin-bottom: 1rem; width: 100%; border: 1px solid rgba(255,255,255,0.1);"></div>
+
+    <label>Latitude</label>
+    <input type="number" id="lat-input" name="lat" step="any" value="{{ facility.lat }}" required>
+    <label>Longitude</label>
+    <input type="number" id="lon-input" name="lon" step="any" value="{{ facility.lon }}" required>
+    
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Perbarui</button>
+      <a href="{{ url_for('admin_dashboard') }}">Batal</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1Ijoib2N0b3JhbWFkaGFuMDUiLCJhIjoiY21xdzZwa2ZzMThncDJxcXlneHEyajVyNyJ9.I9hn4Rlo3Bp7c3v-0BKuzg';
+  
+  // Ambil data koordinat lama dari database
+  const initialLat = {{ facility.lat }};
+  const initialLon = {{ facility.lon }};
+
+  const map = new mapboxgl.Map({
+    container: 'admin-map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [initialLon, initialLat],
+    zoom: 15
+  });
+
+  // Taruh marker di posisi awal
+  let marker = new mapboxgl.Marker({ color: '#e74c3c' })
+    .setLngLat([initialLon, initialLat])
+    .addTo(map);
+
+  // Kalau klik di tempat baru, marker & angka input bakal ganti
+  map.on('click', (e) => {
+    const lat = e.lngLat.lat;
+    const lon = e.lngLat.lng;
+    
+    document.getElementById('lat-input').value = lat.toFixed(6);
+    document.getElementById('lon-input').value = lon.toFixed(6);
+    
+    marker.setLngLat([lon, lat]);
+  });
+</script>
+{% endblock %}
