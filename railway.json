@@ -1,0 +1,7 @@
+{
+  "build": {
+    "nixpacksPlan": {
+      "aptPkgs": ["libpq-dev", "gcc"]
+    }
+  }
+}
