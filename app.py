@@ -151,6 +151,10 @@ def init_db():
         db.session.add(admin)
         db.session.commit()
     print('Database siap. Admin: admin / admin123')
-
+# Tambahkan ini di bagian bawah app.py
+with app.app_context():
+    db.create_all()
+    # Opsional: lu bisa panggil fungsi import data lu di sini kalau mau otomatis
+    # import_data_otomatis()
 if __name__ == '__main__':
     app.run(debug=True)
