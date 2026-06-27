@@ -6,3 +6,4 @@ python-dotenv==1.0.1
 werkzeug==3.0.3
 geoalchemy2==0.15.1
 gunicorn
+
